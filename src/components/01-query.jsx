@@ -1,0 +1,47 @@
+import React from 'react'
+import { ApolloProvider, Query } from 'react-apollo'
+import ApolloClient from 'apollo-boost'
+import gql from 'graphql-tag'
+
+const client = new ApolloClient({
+  uri: 'http://localhost:5000/graphql'
+})
+
+export default function App() {
+  return (
+    <ApolloProvider client={client} >
+      <div>
+        <MyQuery />
+      </div>
+    </ApolloProvider>
+
+  )
+}
+
+function MyQuery() {
+
+  var query = gql`
+    query {
+      getDB {name,id,price,poster}
+    }`
+
+  return (
+    <Query query={query} >
+      {
+        ({ loading, data }) => {
+          console.log(data)
+          // console.log(loading)
+          return loading ? <div>loading...</div> : <div>{
+            data.getDB.map((i) => <div key={i.id}>
+              <div>名称：{i.name}</div>
+              <div>价格：{i.price}</div>
+              <div>地址：{i.poster}</div>
+            </div>)
+          }</div>
+        }
+      }
+    </Query>
+
+  )
+}
+
